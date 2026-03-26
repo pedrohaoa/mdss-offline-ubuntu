@@ -33,11 +33,53 @@
 
 ## 1. Qué es MDSS y qué vamos a hacer
 
-**MetaDefender Storage Security (MDSS)** es un producto de OPSWAT que escanea repositorios de almacenamiento en busca de malware, vulnerabilidades y datos sensibles. Se conecta a servicios como SMB, NFS, S3, Azure Blob, Google Cloud Storage, Box, SFTP, FTP y OneDrive/SharePoint (Graph API).
+### 1.1 MetaDefender Storage Security en una frase
 
-**Lo que esta guía cubre:**
+**MetaDefender Storage Security (MDSS)** es la solución de OPSWAT que escanea, detecta y remedia amenazas en repositorios de almacenamiento — on-premises y cloud — antes de que el malware, las vulnerabilidades o los datos sensibles expuestos se conviertan en un incidente.
 
-Desplegar MDSS 4.3.1 en una VM Ubuntu 24.04 LTS usando el **Offline Docker Toolkit**, que empaqueta:
+### 1.2 El problema que resuelve
+
+Las organizaciones almacenan datos en decenas de repositorios (NAS, cloud, backups, file shares) pero rara vez escanean esos datos en reposo de forma continua. Los riesgos reales:
+
+- **Malware dormido** en ficheros legacy que nunca se re-escanearon con motores actualizados.
+- **Amenazas zero-day** que las soluciones de perímetro no detectaron en su momento.
+- **Datos sensibles expuestos** (PII, credenciales, secretos cloud) dentro de ficheros almacenados.
+- **Backups infectados** que restaurarían el malware junto con los datos.
+- **Requisitos de cumplimiento** (GDPR, NIS2, HIPAA, PCI-DSS, DORA) que exigen escaneo periódico de datos en reposo.
+
+### 1.3 Cómo funciona — tres fases
+
+| Fase | Qué hace | Detalle |
+|------|----------|---------|
+| **Integrar** | Conectar repositorios | NAS (SMB, NFS, SFTP, FTP), cloud (AWS S3, Azure Blob, Azure Files, Google Cloud, Alibaba Cloud), colaboración (OneDrive/SharePoint via Graph API, Box), S3-compatible (Wasabi, MinIO, NetApp StorageGRID). |
+| **Escanear** | Analizar ficheros | Multiscanning con 30+ motores antivirus simultáneos (99.2% de detección verificada por SE Labs), Deep CDR (sanitización de ficheros), detección de vulnerabilidades basadas en ficheros, Proactive DLP (datos sensibles), Sandbox adaptativo. |
+| **Remediar** | Actuar sobre resultados | Workflows automatizados: etiquetar, copiar, mover, eliminar ficheros según el veredicto. Hasta 5 destinos de remediación. Escaneo en tiempo real, programado y bajo demanda. |
+
+### 1.4 Tecnologías core de OPSWAT integradas
+
+| Tecnología | Función |
+|-----------|---------|
+| **Metascan™ Multiscanning** | 30+ motores AV simultáneos para máxima detección |
+| **Deep CDR™** | Desarma y reconstruye ficheros eliminando contenido activo (macros, scripts, objetos embebidos) — previene amenazas conocidas y desconocidas |
+| **Proactive DLP** | Detecta datos sensibles: SSN, tarjetas de crédito, IPs, credenciales cloud (AWS, Azure, GCP), PHI/PII en ficheros DICOM, expresiones regulares personalizadas |
+| **Sandbox adaptativo** | Análisis dinámico de comportamiento para amenazas evasivas |
+| **Vulnerability Assessment** | Detección de vulnerabilidades (CVEs) basadas en ficheros |
+
+### 1.5 Top casos de uso
+
+1. **Remediación de malware y cumplimiento** — Descubrir y eliminar amenazas dormidas en datos legacy. Escaneos en tiempo real, programados y bajo demanda con generación de informes de auditoría (HIPAA, GDPR, PCI-DSS).
+
+2. **Seguridad de NAS y file storage** — Escaneo directo de ficheros en dispositivos NAS (NetApp, Dell EMC, Isilon) vía SMB/NFS/SFTP. Detección y remediación de malware en shares y directorios de usuario.
+
+3. **Seguridad híbrida/multi-cloud** — Escaneo consistente de ficheros antes de que entren o salgan de entornos on-premises y cloud, asegurando que los datos en reposo están limpios.
+
+4. **Protección proactiva de backups** — Escaneo de repositorios de backup (NFS, SMB, S3) con Identity Scanning (detección incremental), verificación multi-capa y detección rápida de cambios post-incidente.
+
+5. **Manejo de workloads tóxicos** — Transferencia segura de ficheros complejos (ISOs, WSI, MSI, contenedores) entre zonas de clasificación baja y alta, donde las inspecciones tradicionales de contenido no son efectivas.
+
+### 1.6 Lo que esta guía cubre
+
+Desplegar MDSS en una VM Ubuntu LTS usando el **Offline Docker Toolkit (Option 2: bundled binaries)**, que empaqueta:
 
 - Binarios de Docker (dockerd, docker CLI, containerd, runc, docker-compose) → no necesitas instalar Docker por tu cuenta.
 - Imágenes de contenedores de todos los microservicios MDSS → no necesitas acceso a Docker Hub.
