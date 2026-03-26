@@ -232,6 +232,7 @@ net.core.somaxconn = 1024
 net.ipv4.ip_forward = 1
 vm.max_map_count = 262144
 fs.file-max = 262144
+fs.inotify.max_user_instances = 8192
 EOF
 
 sudo sysctl --system
@@ -240,8 +241,10 @@ sudo sysctl --system
 Verificar:
 
 ```bash
-sysctl net.ipv4.ip_forward vm.max_map_count fs.file-max net.core.somaxconn
+sysctl net.ipv4.ip_forward vm.max_map_count fs.file-max net.core.somaxconn fs.inotify.max_user_instances
 ```
+
+> `mdss.sh` comprueba explícitamente `inotify.max_user_instances >= 1024` al arrancar. Con 8192 se evita el warning y se deja margen para los ~50 contenedores.
 
 Resultado esperado:
 
@@ -250,6 +253,7 @@ net.ipv4.ip_forward = 1
 vm.max_map_count = 262144
 fs.file-max = 262144
 net.core.somaxconn = 1024
+fs.inotify.max_user_instances = 8192
 ```
 
 ### 3.7 Crear directorio de logs de MDSS
@@ -356,6 +360,8 @@ offline-docker-toolkit-4.3.1.zip: OK
 ## 6. Extracción e inspección del toolkit
 
 ### 6.1 Extraer
+
+> **Nota importante:** El ZIP de MDSS 4.3.1 extrae los ficheros **directamente en el directorio destino**, sin crear un subdirectorio con el nombre de la versión. Por eso descomprimimos directamente en `package/current/`.
 
 ```bash
 export MDSS_HOME="/srv/mdss-offline/package/current"
@@ -889,7 +895,7 @@ sudo /srv/mdss-offline/package/current/docker/docker ps | head -10
 curl -sI http://127.0.0.1/ | head -3
 ```
 
-> ⚠️ **Siempre hacer backup de `customer.env` antes de un upgrade.** Contiene las passwords de PostgreSQL generadas en la primera instalación. Sin ese fichero, la nueva versión no puede conectar a la base de datos existente.
+> ⚠️ **`customer.env` es CRÍTICO.** Contiene `POSTGRES_PASSWORD`, `POSTGRES_SUPERUSER_PASSWORD` y `POSTGRESQL_URL` generadas automáticamente en la primera instalación. Sin este fichero, una reinstalación creará passwords nuevas incompatibles con los datos existentes en el volumen PostgreSQL, dejando la base de datos inaccesible.
 
 ### 15.3 Rollback
 
