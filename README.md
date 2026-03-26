@@ -102,12 +102,12 @@ Desplegar MDSS en una VM Ubuntu LTS usando el **Offline Docker Toolkit (Option 2
 
 | Recurso | Mínimo | Recomendado | Notas |
 |---------|--------|-------------|-------|
-| vCPU | 4 | 8-16 | MDSS arranca ~50 contenedores |
-| RAM | 8 GiB | 16-32 GiB | En runtime real consume ~2-3 GiB; PostgreSQL usa ~25% de RAM para buffers |
-| Disco | 50 GiB libres | 200+ GiB | El toolkit ZIP pesa ~4.4 GiB, el tar interno ~4.3 GiB, y las imágenes extraídas ocupan espacio adicional |
-| Swap | Recomendado | 4 GiB | Colchón de seguridad |
+| vCPU | 8 | 16 | MDSS arranca ~50 contenedores |
+| RAM | 16 GiB | 32-64 GiB | En runtime real consume +6 GiB; PostgreSQL usa ~25% de RAM para buffers |
+| Disco | 150 GiB libres | 500 GiB | El toolkit ZIP pesa ~4.4 GiB, el tar interno ~4.3 GiB, y las imágenes extraídas ocupan espacio adicional |
+| Swap | Recomendado | 4-8 GiB | Colchón de seguridad |
 
-> **Dato real de esta instalación:** Con 16 vCPU, 31 GiB RAM y 491 GiB de disco, el sistema queda al 7% de uso de RAM y 2% de disco tras el despliegue.
+> **Dato real de esta instalación:** Con 16 vCPU, 32 GiB RAM y 500 GiB de SSD, el sistema queda al 7% de uso de RAM y 2% de disco tras el despliegue.
 
 ### 2.2 Sistema operativo
 
